@@ -1,0 +1,11 @@
+{
+    "profit": 7000,
+    "low_stock": 2,
+    "clients_number": 10,
+    "products_number": 65,
+    "sales_data": [
+        {"date":"Junio 2024","value":10}
+    ],
+    "total_profit": 2000,
+    "total_sales": 10
+}

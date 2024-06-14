@@ -4,8 +4,8 @@
     "clients_number": 10,
     "products_number": 65,
     "sales_data": [
-        {"date":"Junio 2024","value":10},
-        {"date":"Julio 2024","value":20}
+        {"date":"Junio 2024","start_value":0,"end_value":10},
+        {"date":"Julio 2024","start_value":10,"end_value":20}
     ],
     "total_profit": 2000,
     "total_sales": 10

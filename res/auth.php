@@ -11,11 +11,38 @@ class cAuth
     $this->cCrypto = new cCrypto();
   }
 
+  public function f_get_token( $token )
+  {
+    $str = $this->cCrypto->decrypt( $token );
+    $d = explode( "|" , $str );
+    foreach( $d as $key => &$value )
+    {
+      switch( $key )
+      {
+        case "user":
+        case "pwd":
+          $value = $this->cCrypto->decrypt( $value );
+          break;
+        default:
+          continue;
+      }
+    }
+    return $d;
+  }
+
   public function f_generate_token( $data = [] )
   {
     $expiration = strtotime("+5 hours");
 
-    
+    $arr = [
+      "user"  => $this->cCrypto->encrypt( $data['u'] ) ,
+      "pwd"   => $this->cCrypto->encrypt( $data['p'] ) ,
+      "time"  => $expiration
+    ];
+
+    $str = implode( "|" , $arr );
+    $token = $this->cCrypto->encrypt( $str );
+    return $token;
   }
 }
 

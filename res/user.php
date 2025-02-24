@@ -44,7 +44,7 @@ class cUser extends cMain
     else die();
   }
 
-  public function f_Relogin()
+  public function f_autologin()
   {
     echo "CHECKING...";
     $this->cAuth->m_check_token();

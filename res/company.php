@@ -1,15 +1,18 @@
 <?php
 
 require 'sql_str.php';
+require 'arlet.php';
 require 'auth.php';
 
-class cCompany extends cMain
+class cCompany extends cArlet
 {
   private $cAuth;
+  private $cDatabase;
+
   public function __construct()
   {
-    parent::__construct("arlet.digysoft");
     $this->cAuth = new cAuth();
+    $this->cDatabase = new cDatabase("arlet_digysoft");
   }
 
   protected function f_get_last_id()
@@ -29,7 +32,7 @@ class cCompany extends cMain
   {
     $q = $this->cDatabase->execute(
       "SELECT id FROM company WHERE ruc = :ruc;",
-      [":ruc" => $ruc],
+      [ "ruc" => $ruc ],
       "one"
     );
     return $q;
@@ -72,15 +75,13 @@ class cCompany extends cMain
         }
       }
 
-      $data = $this->convert_params($data);
-
-      $id = array( ":id" => $this->f_get_last_id() );
+      $id = array( "id" => $this->f_get_last_id() );
       $parse = array_merge( $id , $data );
 
-      $exists = $this->f_company_exists($data[':ruc']);
+      $exists = $this->f_company_exists( $data['ruc'] );
 
       if( $exists != false )
-        $this->set_error("ERROR: COMPANY WITH RUC ".$data[':ruc']." ALREADY REGISTERED");
+        $this->set_error("ERROR: COMPANY WITH RUC ".$data['ruc']." ALREADY REGISTERED");
 
       $c = $this->cDatabase->execute(
         COMPANY_INSERTION,
@@ -91,13 +92,13 @@ class cCompany extends cMain
       $u = $this->cDatabase->execute(
         USER_INSERTION,
         array(
-          ":name" => $this->cCrypto->encrypt("admin"),
-          ":lastname" => $this->cCrypto->encrypt("admin"),
-          ":email" => $this->cCrypto->encrypt("admin"),
-          ":username" => $data[':ruc'],
-          ":pwd" => $this->cCrypto->encrypt($data[':ruc']),
-          ":company" => $id[':id'],
-          ":role" => 1
+          "name" => $this->cCrypto->encrypt("admin"),
+          "lastname" => $this->cCrypto->encrypt("admin"),
+          "email" => $this->cCrypto->encrypt("admin"),
+          "username" => $data['ruc'],
+          "pwd" => $this->cCrypto->encrypt($data['ruc']),
+          "company" => $id['id'],
+          "role" => 1
         )
       );
 
@@ -108,10 +109,12 @@ class cCompany extends cMain
 
   public function f_get_data()
   {
-    $this->cAuth->m_check_token();
-    $q = $this->cDatabase->execute(
-      "SELECT * FROM company;"
-    );
-    echo json_encode($q , true);
+    if( $this->cAuth->f_check_token() )
+    {
+      $q = $this->cDatabase->execute(
+        "SELECT * FROM company;"
+      );
+      echo json_encode($q , true);
+    }else $this->set_error("Authorization failed.");
   }
 }

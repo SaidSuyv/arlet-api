@@ -4,5 +4,4 @@ require '../res/user.php';
 
 $cApi = new cUser();
 
-echo "PENE";
-// echo $cApi->f_Relogin();
+echo $cApi->f_autologin();

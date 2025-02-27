@@ -1,42 +1,44 @@
 <?php
 
+require 'arlet.php';
 require 'auth.php';
 
-class cUser extends cMain
+class cUser extends cArlet
 {
-  private $auth;
+  private $cAuth;
+  private $cDatabase;
 
   public function __construct()
   {
-    parent::__construct("arlet.digysoft");
     $this->cAuth = new cAuth();
+    $this->cDatabase = new cDatabase("arlet_digysoft");
   }
 
-  private function f_get_id_by_username($user)
-  {
-    $q = $this->cDatabase->execute(
-      "SELECT id FROM user WHERE username = :u;",
-      [ ":u" => $user ],
-      "one"
-    );
-    return $q['id'];
-  }
-
-  public function f_Login($data)
+  public function f_login($data)
   {
     $params = ['u','p'];
 
     if( $this->check_params( $data , $params ) )
     {
-      if( $this->cAuth->f_internal_login( $data ) )
+      if( $this->cAuth->f_internal_login( $data["u"] , $data["p"] ) )
       {
-        $id = $this->f_get_id_by_username($data['u']);
+        // Obtain important data for login procedure
+        $id = $this->cAuth->f_get_id();
+
+        if( $id == null )
+          $this->set_error("SERVER ERROR: There was an unexpected server error. Please try again later.");
+
         $n = $this->cDatabase->execute(
           "SELECT b_new AS 'n' , IF( f_role = 1 , 1 , 0 ) AS 'a' FROM user WHERE id = :id;",
-          [ ":id" => $id ],
+          [ "id" => $id ],
           "one"
         );
-        $this->cAuth->f_generate_token($data);
+
+        // Generates token and sends it as a cookie
+        $t = $this->cAuth->f_generate_token($data);
+        $this->cAuth->f_generate_cookie("arlet_token",$t);
+
+        // Returns login data
         return json_encode( $n , true );
       }
       else $this->set_error("Login failed. Please check credentials");
@@ -46,16 +48,19 @@ class cUser extends cMain
 
   public function f_autologin()
   {
-    echo "CHECKING...";
-    $this->cAuth->m_check_token();
-    $id = $this->cAuth->f_get_id_by_token();
-    if( $id != false )
+    if( $this->cAuth->f_check_token() )
     {
+      $id = $this->cAuth->f_get_id();
+
+      if( $id == null )
+        $this->set_error("SERVER ERROR: There was an unexpected error in the server. Please try again later.");
+
       $n = $this->cDatabase->execute(
         "SELECT b_new AS 'n' , IF( f_role = 1 , 1 , 0 ) AS 'a' FROM user WHERE id = :id;",
-        [ ":id" => $id['id'] ],
+        [ "id" => $id ],
         "one"
       );
+
       return json_encode( $n , true );
     }
     else $this->set_error("Authorization failed.");

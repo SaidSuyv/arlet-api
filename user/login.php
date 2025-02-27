@@ -9,4 +9,4 @@ require '../res/user.php';
 
 $cAPI = new cUser();
 
-echo $cAPI->f_Login($input);
+echo $cAPI->f_login($input);

@@ -55,9 +55,9 @@ class cAuth
       [
         "expires" => $expiration,
         "path" => "/",
-        "secure" => false,
+        "secure" => true,
         "httponly" => true,
-        "samesite" => "Lax"
+        "samesite" => "Strict"
       ]
     );
   }

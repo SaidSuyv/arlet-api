@@ -7,11 +7,13 @@ require 'auth.php';
 class cCompany extends cArlet
 {
   private $cAuth;
+  private $cCrypto;
   private $cDatabase;
 
   public function __construct()
   {
     $this->cAuth = new cAuth();
+    $this->cCrypto = new cCrypto();
     $this->cDatabase = new cDatabase("arlet_digysoft");
   }
 

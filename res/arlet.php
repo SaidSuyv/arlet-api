@@ -2,7 +2,7 @@
 
 class cArlet
 {
-  protected function check_params($var , $param)
+  protected function check_params($var , $params)
   {
     if( !isset($var) )
       return false;

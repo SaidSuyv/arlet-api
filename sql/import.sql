@@ -77,6 +77,39 @@ CREATE TABLE IF NOT EXISTS `currency` (
 );
 
 ALTER TABLE `company` ADD CONSTRAINT `company_fk5` FOREIGN KEY (`country_currency`) REFERENCES `currency`(`id`);
+
+DROP TABLE IF EXISTS `products`;
+DROP TABLE IF EXISTS `product_type`;
+
+CREATE TABLE IF NOT EXISTS `products` (
+	`code` int AUTO_INCREMENT NOT NULL UNIQUE,
+	`product_type` int NOT NULL,
+	`img_path` text,
+	`description` text NOT NULL,
+	`cost_price` decimal(10,2) NOT NULL,
+	`profit_percentage` int NOT NULL,
+	`cost_sale` decimal(10,2) NOT NULL,
+	`wholesale_price` decimal(10,2) NOT NULL,
+	`wholesale_min_quantity` int NOT NULL,
+	`flg_inventory_control` boolean NOT NULL DEFAULT true,
+	`stock` int,
+	`minimum_stock` int,
+	`expiration_date` date,
+	`sunat_measurement_unit` int NOT NULL,
+	`sunat_product_code` varchar(255) NOT NULL,
+	`igv_percentage` int,
+	`icbper_amount` decimal(10,2),
+	PRIMARY KEY (`code`)
+);
+
+CREATE TABLE IF NOT EXISTS `product_type` (
+	`id` int AUTO_INCREMENT NOT NULL UNIQUE,
+	`name` varchar(200) NOT NULL,
+	PRIMARY KEY (`id`)
+);
+
+ALTER TABLE `products` ADD CONSTRAINT `products_fk1` FOREIGN KEY (`product_type`) REFERENCES `product_type`(`id`);
+
 -- #########################################################################
 
 -- ADMIN ROLES

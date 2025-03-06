@@ -61,3 +61,31 @@ define(
   "USER_INSERTION",
   $user_insertion
 );
+
+/**
+ *************************************
+ *                                   *
+ *        PRODUCT CREATION           *
+ *                                   *
+ *************************************
+*/
+$product_insertion = 
+  'INSERT INTO products VALUES('.
+    ':code,'.
+    ':ptype,'.
+    ':ipath,'.
+    ':desc,'.
+    ':cprice,'.
+    ':profit,'.
+    ':csale,'.
+    ':whprice,'.
+    ':whminq,'.
+    ':flg_inv,'.
+    ':stock,'.
+    ':min_st,'.
+    ':xpdate,'.
+    ':sunat_unit,'.
+    ':sunat_pcode,'.
+    ':igv_per,'.
+    ':icbper_am,'.
+  ') where ';

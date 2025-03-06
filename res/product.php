@@ -9,6 +9,7 @@ class cProduct extends cArlet
   public function __construct()
   {
     $this->cAuth = new cAuth();
+    $this->cDatabase = new cDatabase("arlet_digysoft");
   }
 
   public function f_add_product($data)
@@ -36,7 +37,9 @@ class cProduct extends cArlet
       ];
       if( $this->check_params( $data , $params ) )
       {
-        
+        $q = $this->cDatabase->execute(
+          ""
+        );
       }
       else $this->set_error("Server Error: P001");
     }

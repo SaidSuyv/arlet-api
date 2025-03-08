@@ -1,6 +1,6 @@
 <FilesMatch "\.php$">
   <IfModule mod_headers.c>
-      SetEnvIf Origin "http(s)?://(localhost|localhost:5173)$" AccessControlAllowOrigin=$0
+      SetEnvIf Origin "http(s)?://(localhost|localhost:5173|localhost:8080)$" AccessControlAllowOrigin=$0
       Header add Access-Control-Allow-Origin %{AccessControlAllowOrigin}e env=AccessControlAllowOrigin
       Header merge Vary Origin
   </IfModule>

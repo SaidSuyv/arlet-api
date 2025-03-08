@@ -1,6 +1,8 @@
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `role`;
 DROP TABLE IF EXISTS `client`;
+DROP TABLE IF EXISTS `products`;
+DROP TABLE IF EXISTS `product_type`;
 DROP TABLE IF EXISTS `company`;
 
 CREATE TABLE IF NOT EXISTS `user` (
@@ -10,10 +12,10 @@ CREATE TABLE IF NOT EXISTS `user` (
 	`username` text NOT NULL,
 	`email` text NOT NULL,
 	`b_archive` tinyint NOT NULL DEFAULT '0',
+	`b_new` tinyint NOT NULL DEFAULT '1',
 	`f_company` int NOT NULL,
 	`f_role` int NOT NULL,
 	`pwd` text NOT NULL,
-  `b_new` tinyint NOT NULL DEFAULT '1',
 	PRIMARY KEY (`id`)
 );
 
@@ -27,22 +29,21 @@ CREATE TABLE IF NOT EXISTS `role` (
 CREATE TABLE IF NOT EXISTS `company` (
 	`id` int AUTO_INCREMENT NOT NULL UNIQUE,
 	`logo_path` text DEFAULT 'NULL',
-	`trade_name` text NOT NULL,
+	`trade_name` varchar(255) NOT NULL,
 	`tax_type` int NOT NULL,
-	`tax_amount` int NOT NULL DEFAULT '0',
 	`country_currency` int NOT NULL,
 	`localization` text NOT NULL,
 	`fiscal_address` text NOT NULL,
 	`annex_facility` text NOT NULL,
-	`email` text NOT NULL,
-	`company_name` text NOT NULL,
-	`ruc` text NOT NULL,
-	`certificate_path` text,
-	`certificate_pwd` text,
-	`scnd_sunat_user` text NOT NULL,
-	`scnd_sunat_pwd` text NOT NULL,
-	`sunat_server` text NOT NULL,
-	`consulting_website` text NOT NULL,
+	`email` varchar(255) NOT NULL,
+	`company_name` varchar(255) NOT NULL,
+	`ruc` varchar(15) NOT NULL,
+	`certificate_path` varchar(500),
+	`certificate_pwd` varchar(300),
+	`scnd_sunat_user` varchar(255) NOT NULL,
+	`scnd_sunat_pwd` varchar(255) NOT NULL,
+	`sunat_server` varchar(255) NOT NULL,
+	`consulting_website` varchar(500) NOT NULL,
 	PRIMARY KEY (`id`)
 );
 
@@ -59,15 +60,6 @@ CREATE TABLE IF NOT EXISTS `client` (
 	PRIMARY KEY (`id`)
 );
 
-ALTER TABLE `user` ADD CONSTRAINT `user_fk6` FOREIGN KEY (`f_company`) REFERENCES `company`(`id`);
-
-ALTER TABLE `user` ADD CONSTRAINT `user_fk7` FOREIGN KEY (`f_role`) REFERENCES `role`(`id`);
-
-
-ALTER TABLE `client` ADD CONSTRAINT `client_fk8` FOREIGN KEY (`f_company`) REFERENCES `company`(`id`);
-
-DROP TABLE IF EXISTS `currency`;
-
 CREATE TABLE IF NOT EXISTS `currency` (
 	`id` int AUTO_INCREMENT NOT NULL UNIQUE,
 	`country` varchar(100) NOT NULL,
@@ -76,13 +68,8 @@ CREATE TABLE IF NOT EXISTS `currency` (
 	PRIMARY KEY (`id`)
 );
 
-ALTER TABLE `company` ADD CONSTRAINT `company_fk5` FOREIGN KEY (`country_currency`) REFERENCES `currency`(`id`);
-
-DROP TABLE IF EXISTS `products`;
-DROP TABLE IF EXISTS `product_type`;
-
 CREATE TABLE IF NOT EXISTS `products` (
-	`code` varchar(11) NOT NULL UNIQUE,
+	`code` int AUTO_INCREMENT NOT NULL UNIQUE,
 	`product_type` int NOT NULL,
 	`img_path` text,
 	`description` text NOT NULL,
@@ -99,6 +86,7 @@ CREATE TABLE IF NOT EXISTS `products` (
 	`sunat_product_code` varchar(255) NOT NULL,
 	`igv_percentage` int,
 	`icbper_amount` decimal(10,2),
+	`company` int NOT NULL,
 	PRIMARY KEY (`code`)
 );
 
@@ -108,7 +96,16 @@ CREATE TABLE IF NOT EXISTS `product_type` (
 	PRIMARY KEY (`id`)
 );
 
+ALTER TABLE `user` ADD CONSTRAINT `user_fk6` FOREIGN KEY (`f_company`) REFERENCES `company`(`id`);
+
+ALTER TABLE `user` ADD CONSTRAINT `user_fk7` FOREIGN KEY (`f_role`) REFERENCES `role`(`id`);
+
+ALTER TABLE `company` ADD CONSTRAINT `company_fk4` FOREIGN KEY (`country_currency`) REFERENCES `currency`(`id`);
+ALTER TABLE `client` ADD CONSTRAINT `client_fk8` FOREIGN KEY (`f_company`) REFERENCES `company`(`id`);
+
 ALTER TABLE `products` ADD CONSTRAINT `products_fk1` FOREIGN KEY (`product_type`) REFERENCES `product_type`(`id`);
+
+ALTER TABLE `products` ADD CONSTRAINT `products_fk17` FOREIGN KEY (`company`) REFERENCES `company`(`id`);
 
 -- ADMIN ROLES
 INSERT INTO role(name) VALUES("admin");

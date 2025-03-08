@@ -45,7 +45,6 @@ class cCompany extends cArlet
     $auth_params = [
       "trade_name",
       "tax_type",
-      "tax_amount",
       "country_currency",
       "localization",
       "fiscal_address",
@@ -68,7 +67,6 @@ class cCompany extends cArlet
         switch($k)
         {
           case "tax_type":
-          case "tax_amount":
           case "country_currency":
           case "ruc":
             continue;

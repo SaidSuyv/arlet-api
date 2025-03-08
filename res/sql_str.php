@@ -14,7 +14,6 @@ $company_insertion =
     'NULL,'.
     ':trade_name,'.
     ':tax_type,'.
-    ':tax_amount,'.
     ':country_currency,'.
     ':localization,'.
     ':fiscal_address,'.

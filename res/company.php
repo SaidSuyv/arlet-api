@@ -69,7 +69,7 @@ class cCompany extends cArlet
           case "tax_type":
           case "country_currency":
           case "ruc":
-            continue;
+            break;
           default:
             $v = $this->cCrypto->encrypt($v);
         }

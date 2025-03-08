@@ -82,7 +82,7 @@ DROP TABLE IF EXISTS `products`;
 DROP TABLE IF EXISTS `product_type`;
 
 CREATE TABLE IF NOT EXISTS `products` (
-	`code` int AUTO_INCREMENT NOT NULL UNIQUE,
+	`code` varchar(11) NOT NULL UNIQUE,
 	`product_type` int NOT NULL,
 	`img_path` text,
 	`description` text NOT NULL,
@@ -109,8 +109,6 @@ CREATE TABLE IF NOT EXISTS `product_type` (
 );
 
 ALTER TABLE `products` ADD CONSTRAINT `products_fk1` FOREIGN KEY (`product_type`) REFERENCES `product_type`(`id`);
-
--- #########################################################################
 
 -- ADMIN ROLES
 INSERT INTO role(name) VALUES("admin");

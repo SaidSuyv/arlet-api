@@ -9,12 +9,14 @@ class cAuth
   private $cDatabase;
 
   private $nCurrentUserId;
+  private $nCurrentCompanyId;
   
   public function __construct()
   {
     $this->cCrypto = new cCrypto();
     $this->cDatabase = new cDatabase("arlet_digysoft");
     $this->nCurrentUserId = null;
+    $this->nCurrentCompanyId = null;
   }
 
   public function f_get_token( $token )
@@ -66,7 +68,7 @@ class cAuth
   {
     $p = [ "u" => $user ];
     $q = $this->cDatabase->execute(
-      "SELECT id , pwd FROM user WHERE username = :u",
+      "SELECT id , f_company AS 'company' , pwd FROM user WHERE username = :u",
       $p,
       "one"
     );
@@ -84,6 +86,7 @@ class cAuth
     if( $pass === $pwd )
     {
       $this->nCurrentUserId = $user_data['id'];
+      $this->nCurrentCompanyId = $user_data['company'];
       return true;
     }
 
@@ -94,6 +97,12 @@ class cAuth
   public function f_get_id()
   {
     if( $this->nCurrentUserId != null ) return $this->nCurrentUserId;
+    else return null;
+  }
+
+  public function f_get_company()
+  {
+    if( $this->nCurrentCompanyId != null ) return $this->nCurrentCompanyId;
     else return null;
   }
 
@@ -117,5 +126,11 @@ class cAuth
       return true;
     }
     else return false;
+  }
+
+  public function set_error()
+  {
+    echo json_encode(["auth"=>false],true);
+    die();
   }
 }
